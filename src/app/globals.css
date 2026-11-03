@@ -609,6 +609,7 @@ h3 {
 .events-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 24px;
   align-items: stretch;
 }
