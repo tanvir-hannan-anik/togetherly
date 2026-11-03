@@ -1,64 +1,22 @@
-const stats = [
-  { value: "100+", label: "Community events" },
-  { value: "2.4k", label: "Helping hands" },
-  { value: "12", label: "Neighborhoods" },
-];
+﻿"use client";
 
-const steps = [
-  "Discover local causes",
-  "Join with one click",
-  "See your impact",
-];
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+import { useApi } from "@/hooks/useApi";
+import type { CommunityStats } from "@/lib/types";
+import { ErrorMessage, Loading } from "@/components/Feedback";
 
 export default function Info() {
-  return (
-    <div className="mx-auto max-w-7xl px-1 pt-8 font-[family-name:var(--font-geist-sans)] text-[#123c30] sm:px-5 dark:text-[#f8f7f2]">
-      <section aria-labelledby="community-heading">
-        <h2
-          id="community-heading"
-          className="text-[10px] font-semibold uppercase text-[#23734e] dark:text-[#e1f28b]"
-        >
-          Our community at a glance
-        </h2>
-        <dl className="mt-3.5 grid gap-4 md:grid-cols-3">
-          {stats.map(({ value, label }) => (
-            <div
-              key={label}
-              className="flex min-h-20 flex-wrap items-center content-center gap-x-2 rounded-[14px] bg-white px-3.5 py-5 text-lg font-bold dark:bg-[#204638]"
-            >
-              <dt className="order-2">{label}</dt>
-              <dd className="order-1">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section aria-labelledby="participation-heading" className="mt-10 sm:mt-11">
-        <h2
-          id="participation-heading"
-          className="text-[28px] font-bold leading-tight tracking-[-0.025em]"
-        >
-          Do good, together.
-        </h2>
-        <p className="mt-2 text-xs text-[#7b9186] dark:text-[#b8cec2]">
-          Explore the causes you care about
-        </p>
-        <ol className="mt-5 grid gap-4 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <li
-              key={step}
-              className={`flex min-h-20 items-center gap-1.5 rounded-[14px] px-[18px] py-5 text-sm font-semibold ${
-                index === 1
-                  ? "bg-[#eaf3e7] dark:bg-[#315b4c]"
-                  : "bg-white dark:bg-[#204638]"
-              }`}
-            >
-              <span aria-hidden="true">0{index + 1}</span>
-              {step}
-            </li>
-          ))}
-        </ol>
-      </section>
-    </div>
-  );
+  const { data, loading, error, reload } = useApi<CommunityStats>("/stats");
+  return <div className="container home-info">
+    <section aria-labelledby="community-heading"><h2 id="community-heading" className="eyebrow">Our community at a glance</h2>
+      {loading ? <Loading label="Loading community impact…" /> : error ? <ErrorMessage message={error} retry={reload} /> : data && <dl className="stats-grid">
+        <div><dd>{data.events.toLocaleString()}</dd><dt>Community events</dt></div><div><dd>{data.volunteers.toLocaleString()}</dd><dt>Helping hands</dt></div><div><dd>{data.neighborhoods.toLocaleString()}</dd><dt>Event locations</dt></div>
+      </dl>}
+    </section>
+    <section className="section-space" aria-labelledby="participation-heading"><h2 id="participation-heading">Do good, together.</h2><p className="muted">Explore the causes you care about.</p>
+      <ol className="steps-grid"><li><Link href="/events"><span>01</span>Discover local causes<ArrowUpRight size={18} /></Link></li><li><Link href="/events"><span>02</span>Join with one click<ArrowUpRight size={18} /></Link></li><li><Link href="/impact"><span>03</span>See your impact<ArrowUpRight size={18} /></Link></li></ol>
+    </section>
+  </div>;
 }
+

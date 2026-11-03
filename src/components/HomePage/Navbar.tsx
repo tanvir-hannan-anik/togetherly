@@ -1,10 +1,12 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Moon, Sun } from "lucide-react";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Moon, Sun, Menu, X, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/components/AuthProvider";
+import { errorMessage } from "@/lib/api";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -14,73 +16,48 @@ const navigation = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
   const [isDark, setIsDark] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    const dark = localStorage.getItem("togetherly-theme") === "dark";
+    document.documentElement.classList.toggle("dark", dark);
+    setIsDark(dark);
+  }, []);
 
   function toggleTheme() {
-    const nextIsDark = document.documentElement.classList.toggle("dark");
-    document.documentElement.style.colorScheme = nextIsDark ? "dark" : "light";
-    setIsDark(nextIsDark);
+    const dark = !isDark;
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("togetherly-theme", dark ? "dark" : "light");
+    setIsDark(dark);
   }
 
-  return (
-    <header className="w-full bg-[#f8f7f2] font-[family-name:var(--font-geist-sans)] text-[#123c30] transition-colors dark:bg-[#132c24] dark:text-[#f8f7f2]">
-      <nav
-        aria-label="Main navigation"
-        className="mx-auto grid min-h-[72px] max-w-7xl grid-cols-[1fr_auto] items-center gap-x-4 px-5 py-3 sm:px-12 md:grid-cols-[minmax(190px,0.9fr)_minmax(0,1.6fr)_auto] md:py-0"
-      >
-        <Link
-          href="/"
-          aria-label="Togetherly home"
-          className="w-fit rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current"
-        >
-          <Image
-            src="/image/Togetherly Community Leaf Logo-1.png"
-            alt="Togetherly"
-            width={2156}
-            height={729}
-            loading="eager"
-            sizes="148px"
-            className="h-auto w-[120px] dark:rounded-md dark:bg-[#f8f7f2] sm:w-[148px]"
-          />
-        </Link>
+  async function handleLogout() {
+    setBusy(true);
+    setError("");
+    try { await logout(); setOpen(false); router.push("/"); }
+    catch (err) { setError(errorMessage(err)); }
+    finally { setBusy(false); }
+  }
 
-        <ul className="col-span-2 row-start-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-3 text-xs md:col-span-1 md:col-start-2 md:row-start-1 md:justify-start md:pt-0">
-          {navigation.map(({ label, href }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                aria-current={pathname === href ? "page" : undefined}
-                className="inline-flex min-h-10 items-center rounded-sm transition-colors hover:text-[#668447] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current dark:hover:text-[#d8ed8c]"
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <div className="col-start-2 row-start-1 flex items-center gap-4 sm:gap-8 md:col-start-3 lg:gap-16">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle dark mode"
-            aria-pressed={isDark}
-            className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-md text-[11px] transition-colors hover:text-[#668447] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current dark:hover:text-[#d8ed8c]"
-          >
-            {isDark ? (
-              <Sun size={12} strokeWidth={1.5} aria-hidden="true" />
-            ) : (
-              <Moon size={12} strokeWidth={1.5} aria-hidden="true" />
-            )}
-            {isDark ? "Light" : "Dark"}
-          </button>
-          <Link
-            href="/login"
-            className="inline-flex h-9 min-w-[76px] items-center justify-center rounded-xl bg-[#103c2f] px-5 text-xs font-semibold text-white transition-colors hover:bg-[#205340] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#103c2f] sm:min-w-[93px] dark:bg-[#d8ed8c] dark:text-[#123c30] dark:hover:bg-[#c9df78] dark:focus-visible:outline-[#d8ed8c]"
-          >
-            Login
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
+  return <header className="site-header">
+    <nav className="container nav-bar" aria-label="Main navigation">
+      <Link href="/" aria-label="Togetherly home" onClick={() => setOpen(false)}><Image src="/image/Togetherly Community Leaf Logo-1.png" alt="Togetherly" width={148} height={50} preload className="brand-logo" /></Link>
+      <div id="main-navigation" className={`nav-links ${open ? "is-open" : ""}`}>
+        {navigation.map(({ label, href }) => <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined} onClick={() => setOpen(false)}>{label}</Link>)}
+        {user && <><Link href="/my-events" onClick={() => setOpen(false)} aria-current={pathname === "/my-events" ? "page" : undefined}>My events</Link><Link href="/joined-events" onClick={() => setOpen(false)} aria-current={pathname === "/joined-events" ? "page" : undefined}>Joined events</Link></>}
+      </div>
+      <div className="nav-actions">
+        <button className="theme-toggle" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} aria-pressed={isDark}>{isDark ? <Sun size={16} /> : <Moon size={16} />}<span>{isDark ? "Light" : "Dark"}</span></button>
+        {user ? <><span className="user-avatar" title={user.name} aria-label={`Signed in as ${user.name}`}>{user.name.charAt(0).toUpperCase()}</span><button className="icon-button" disabled={busy} onClick={handleLogout} aria-label="Log out"><LogOut size={18} /></button></> : <Link href="/login" className="button-link small">{loading ? "Account" : "Login"}</Link>}
+        <button className="mobile-menu icon-button" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? <X size={22} /> : <Menu size={22} />}</button>
+      </div>
+    </nav>
+    {error && <p className="container error-text" role="alert">{error}</p>}
+  </header>;
 }
+
