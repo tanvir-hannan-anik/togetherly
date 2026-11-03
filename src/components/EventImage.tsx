@@ -29,6 +29,10 @@ export default function EventImage({
       className={className}
       loading="lazy"
       referrerPolicy="no-referrer"
+      ref={(image) => {
+        // A load error before hydration never reaches onError, so check on mount too.
+        if (image?.complete && image.naturalWidth === 0) setFailedSource(src);
+      }}
       onError={() => setFailedSource(src)}
     />
   );
