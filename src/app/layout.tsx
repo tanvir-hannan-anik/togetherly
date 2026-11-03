@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/navbar";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
 import WelcomeToast from "@/components/welcome-toast";

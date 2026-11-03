@@ -1,4 +1,4 @@
-import EventEditor from "@/components/EventEditor";
+import EventEditor from "@/components/event/edit-event";
 
 export const metadata = { title: "Edit Event" };
 
@@ -12,7 +12,7 @@ export default function Page() {
           Update the details so everyone knows what to expect.
         </p>
       </div>
-        <EventEditor />
+      <EventEditor />
     </main>
   );
 }

@@ -35,9 +35,7 @@ export default function Newsletter() {
       <Mail size={36} strokeWidth={1.4} />
       <p className="eyebrow">Stay in the loop</p>
       <h2 id="newsletter-heading">A little good in your inbox</h2>
-      <p className="muted">
-        New causes near you, once a month. No spam, ever.
-      </p>
+      <p className="muted">New causes near you, once a month. No spam, ever.</p>
       <form className="newsletter-form" onSubmit={subscribe}>
         <label className="sr-only" htmlFor="newsletter-email">
           Email address

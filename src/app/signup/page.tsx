@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import AuthForm from "@/components/auth-form";
-import { Loading } from "@/components/Feedback";
+import { Loading } from "@/components/feedback";
 
 export const metadata = { title: "Join the Community" };
 

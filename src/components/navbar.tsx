@@ -37,11 +37,6 @@ export default function Navbar() {
     setIsDark(dark);
   }, []);
 
-  useEffect(() => {
-    setOpen(false);
-    setMenuOpen(false);
-  }, [pathname]);
-
   function toggleTheme() {
     const dark = !isDark;
     document.documentElement.classList.toggle("dark", dark);
@@ -61,7 +56,11 @@ export default function Navbar() {
   return (
     <header className="site-header">
       <nav className="container nav-bar" aria-label="Main navigation">
-        <Link href="/" aria-label="Togetherly home">
+        <Link
+          href="/"
+          aria-label="Togetherly home"
+          onClick={() => setOpen(false)}
+        >
           <Image
             src="/image/Togetherly Community Leaf Logo-1.png"
             alt="Togetherly"
@@ -80,6 +79,7 @@ export default function Navbar() {
               key={href}
               href={href}
               aria-current={pathname === href ? "page" : undefined}
+              onClick={() => setOpen(false)}
             >
               {label}
             </Link>
@@ -126,7 +126,12 @@ export default function Navbar() {
                   <div className="profile-dropdown" role="menu">
                     <p className="profile-dropdown-name">{displayName}</p>
                     {profileLinks.map(({ label, href }) => (
-                      <Link key={href} href={href} role="menuitem">
+                      <Link
+                        key={href}
+                        href={href}
+                        role="menuitem"
+                        onClick={() => setMenuOpen(false)}
+                      >
                         {label}
                       </Link>
                     ))}

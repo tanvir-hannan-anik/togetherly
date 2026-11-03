@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/use-api";
 import type { CommunityStats } from "@/lib/types";
-import { ErrorMessage, Loading } from "@/components/Feedback";
+import { ErrorMessage, Loading } from "@/components/feedback";
 
 export default function Info() {
   const { data, loading, error, reload } = useApi<CommunityStats>("/stats");

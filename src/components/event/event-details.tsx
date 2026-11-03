@@ -15,13 +15,13 @@ import {
   Pencil,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/use-api";
 import type { CommunityEvent } from "@/lib/types";
 import { api, errorMessage, formatDate } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { ErrorMessage, Loading } from "@/components/Feedback";
-import EventImage from "@/components/EventImage";
-import DeleteEventButton from "@/components/DeleteEventButton";
+import { ErrorMessage, Loading } from "@/components/feedback";
+import EventImage from "@/components/event/event-image";
+import DeleteEventButton from "@/components/event/delete-event-dialog";
 
 export default function EventDetails() {
   const { id } = useParams<{ id: string }>();

@@ -21,8 +21,8 @@ export default function EventImage({
       </div>
     );
   // Organizer-supplied images are loaded directly, without proxying arbitrary URLs through Next.js.
-  // eslint-disable-next-line @next/next/no-img-element
   return (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt={alt}

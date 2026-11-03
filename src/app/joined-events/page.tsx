@@ -1,4 +1,4 @@
-import PersonalEvents from "@/components/PersonalEvents";
+import PersonalEvents from "@/components/personal-events";
 
 export const metadata = { title: "Joined Events" };
 
@@ -10,7 +10,7 @@ export default function Page() {
         <h1>My joined events</h1>
         <p className="muted">Your plans to do good, all in one place.</p>
       </div>
-        <PersonalEvents joined />
+      <PersonalEvents joined />
     </main>
   );
 }

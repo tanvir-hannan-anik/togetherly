@@ -2,10 +2,10 @@
 
 import { useParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/use-api";
 import type { CommunityEvent } from "@/lib/types";
-import { ErrorMessage, Loading } from "@/components/Feedback";
-import EventForm from "@/components/EventForm";
+import { ErrorMessage, Loading } from "@/components/feedback";
+import EventForm from "@/components/event/event-form";
 
 export default function EventEditor() {
   const { id } = useParams<{ id: string }>();

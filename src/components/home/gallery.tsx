@@ -1,4 +1,4 @@
-import EventImage from "@/components/EventImage";
+import EventImage from "@/components/event/event-image";
 
 const photos = [
   { src: "/image/gallery/gallery-1.jpg", caption: "Riverside cleanup" },

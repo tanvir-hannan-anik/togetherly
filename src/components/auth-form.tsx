@@ -7,7 +7,7 @@ import { ArrowRight, Eye, EyeOff, HeartHandshake } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import { ErrorMessage } from "@/components/Feedback";
+import { ErrorMessage } from "@/components/feedback";
 
 export function passwordProblem(password: string) {
   if (password.length < 6)

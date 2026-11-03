@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, CalendarDays, MapPin, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import EventImage from "@/components/EventImage";
+import EventImage from "@/components/event/event-image";
 import { formatDate } from "@/lib/api";
 import type { CommunityEvent } from "@/lib/types";
 

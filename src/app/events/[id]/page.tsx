@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import EventDetails from "@/components/EventDetails";
-import { Loading } from "@/components/Feedback";
+import EventDetails from "@/components/event/event-details";
+import { Loading } from "@/components/feedback";
 
 export const metadata = { title: "Event Details" };
 

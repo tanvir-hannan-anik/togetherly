@@ -1,4 +1,4 @@
-import EventForm from "@/components/EventForm";
+import EventForm from "@/components/event/event-form";
 
 export const metadata = { title: "Create an Event" };
 
@@ -13,7 +13,7 @@ export default function Page() {
           required.
         </p>
       </div>
-        <EventForm />
+      <EventForm />
     </main>
   );
 }

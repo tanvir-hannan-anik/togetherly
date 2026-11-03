@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorMessage } from "@/components/Feedback";
+import { ErrorMessage } from "@/components/feedback";
 
 export default function ErrorPage({ reset }: { reset: () => void }) {
   return (

@@ -253,6 +253,8 @@ app.post("/newsletter", async (req, res) => {
   res.send({ message: "You're on the community mailing list. Thank you!" });
 });
 
+// Express only treats a middleware as an error handler when it declares all four parameters.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error, req, res, next) => {
   console.error(error);
   res.status(500).send({ message: "Something went wrong. Please try again." });

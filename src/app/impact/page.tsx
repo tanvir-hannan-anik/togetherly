@@ -1,4 +1,4 @@
-import Impact from "@/components/Impact";
+import Impact from "@/components/impact";
 
 export const metadata = { title: "Our Impact" };
 

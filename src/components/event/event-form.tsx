@@ -6,8 +6,8 @@ import { useState, type FormEvent } from "react";
 import { ArrowRight, Check, Sprout } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ErrorMessage, Loading } from "@/components/Feedback";
-import { useApi } from "@/hooks/useApi";
+import { ErrorMessage, Loading } from "@/components/feedback";
+import { useApi } from "@/hooks/use-api";
 import { api, errorMessage } from "@/lib/api";
 import type { CommunityEvent } from "@/lib/types";
 

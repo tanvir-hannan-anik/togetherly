@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Pencil } from "lucide-react";
-import { useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/use-api";
 import type { CommunityEvent } from "@/lib/types";
-import EventCard from "@/components/EventCard";
-import DeleteEventButton from "@/components/DeleteEventButton";
-import { EmptyState, ErrorMessage, Loading } from "@/components/Feedback";
+import EventCard from "@/components/event/event-card";
+import DeleteEventButton from "@/components/event/delete-event-dialog";
+import { EmptyState, ErrorMessage, Loading } from "@/components/feedback";
 import { Button } from "@/components/ui/button";
 
 export default function PersonalEvents({

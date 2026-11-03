@@ -1,4 +1,4 @@
-import EventBrowser from "@/components/EventBrowser";
+import EventBrowser from "@/components/event/events-grid";
 
 export const metadata = { title: "Upcoming Events" };
 

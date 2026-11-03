@@ -8,9 +8,9 @@ import {
   CalendarDays,
   CircleCheck,
 } from "lucide-react";
-import { useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/use-api";
 import type { CommunityStats } from "@/lib/types";
-import { EmptyState, ErrorMessage, Loading } from "@/components/Feedback";
+import { EmptyState, ErrorMessage, Loading } from "@/components/feedback";
 
 export default function Impact() {
   const { data, error, loading, reload } = useApi<CommunityStats>("/stats");

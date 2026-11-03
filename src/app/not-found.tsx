@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/Feedback";
+import { EmptyState } from "@/components/feedback";
 
 export default function NotFound() {
   return (

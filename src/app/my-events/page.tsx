@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import PersonalEvents from "@/components/PersonalEvents";
+import PersonalEvents from "@/components/personal-events";
 
 export const metadata = { title: "My Events" };
 
@@ -20,7 +20,7 @@ export default function Page() {
           Create an event
         </Link>
       </div>
-        <PersonalEvents />
+      <PersonalEvents />
     </main>
   );
 }

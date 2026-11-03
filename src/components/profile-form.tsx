@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import { ErrorMessage, Loading } from "@/components/Feedback";
+import { ErrorMessage, Loading } from "@/components/feedback";
 
 export default function ProfileForm() {
   const { data: session, isPending } = authClient.useSession();

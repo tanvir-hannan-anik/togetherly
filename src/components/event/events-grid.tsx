@@ -3,10 +3,10 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Search, Plus } from "lucide-react";
-import { useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/use-api";
 import type { CommunityEvent } from "@/lib/types";
-import EventCard from "@/components/EventCard";
-import { EmptyState, ErrorMessage, Loading } from "@/components/Feedback";
+import EventCard from "@/components/event/event-card";
+import { EmptyState, ErrorMessage, Loading } from "@/components/feedback";
 import { Button } from "@/components/ui/button";
 
 export default function EventBrowser() {
