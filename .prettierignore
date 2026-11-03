@@ -1,7 +1,3 @@
 node_modules
 .next
-.next-e2e
-server/node_modules
 package-lock.json
-server/package-lock.json
-test-results
