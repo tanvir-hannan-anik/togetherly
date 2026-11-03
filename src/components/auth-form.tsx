@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight, Eye, EyeOff, HeartHandshake } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
@@ -20,12 +20,16 @@ export function passwordProblem(password: string) {
 }
 
 function safeNext(value: string | null) {
-  return value &&
-    value.startsWith("/") &&
-    !value.startsWith("//") &&
-    !value.includes("\\")
-    ? value
-    : "/events";
+  // Parse like the browser does (it strips tabs/newlines), then allow same-origin paths only.
+  const base = "http://same-origin.invalid";
+  try {
+    const url = new URL(value || "/events", base);
+    return url.origin === base
+      ? url.pathname + url.search + url.hash
+      : "/events";
+  } catch {
+    return "/events";
+  }
 }
 
 export default function AuthForm({ signup = false }: { signup?: boolean }) {
@@ -35,6 +39,13 @@ export default function AuthForm({ signup = false }: { signup?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const oauthError = params.get("error")
+    ? "GitHub sign-in failed or was cancelled. Please try again."
+    : "";
+
+  useEffect(() => {
+    if (oauthError) toast.error(oauthError, { id: "oauth-error" });
+  }, [oauthError]);
 
   function fail(message: string) {
     setError(message);
@@ -77,6 +88,7 @@ export default function AuthForm({ signup = false }: { signup?: boolean }) {
     const { error } = await authClient.signIn.social({
       provider: "github",
       callbackURL: `${next}${joiner}welcome=1`,
+      errorCallbackURL: `/login?next=${encodeURIComponent(next)}`,
     });
     if (error)
       fail(error.message || "GitHub sign-in failed. Please try again.");
@@ -170,7 +182,9 @@ export default function AuthForm({ signup = false }: { signup?: boolean }) {
               </button>
             </div>
           </label>
-          {error && <ErrorMessage message={error} />}
+          {(error || oauthError) && (
+            <ErrorMessage message={error || oauthError} />
+          )}
           <Button type="submit" className="form-submit" disabled={busy}>
             {busy ? "Please wait…" : signup ? "Create account" : "Log in"}
             <ArrowRight size={17} />

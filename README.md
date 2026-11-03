@@ -1,206 +1,136 @@
 ﻿# Togetherly — Social Impact Events
 
-A community events website built with Next.js, React, a separate Express server, and MongoDB. The code follows the reference projects: regular page components, direct API calls, reusable components, and backend routes in one `index.js`.
+A community-service events site. Organizers post cleanups, plantations and donation drives; volunteers browse upcoming events and join them.
 
-The backend follows the reference repository's flat application structure: `index.js`, `package.json`, `package-lock.json`, `.gitignore`, and `vercel.json`. All setup, collections, middleware, and routes are directly in `index.js`; there are no application factories, controllers, service layers, or route folders. The additional `.env.example` and `test/` folder provide setup instructions and automated checks. Togetherly's email/password sessions require a few authentication dependencies beyond the reference's token-verification-only server.
+- **Client:** Next.js 16 (App Router) + React 19, styled with Tailwind and plain CSS.
+- **Auth:** [better-auth](https://www.better-auth.com/) in the Next.js app: email/password and GitHub login, stored in MongoDB.
+- **Server:** a small Express 5 API in `server/index.js` backed by MongoDB.
+
+The structure follows the reference projects [b14-wanderlust-client](https://github.com/ProgrammingHero1/b14-wanderlust-client) and [b14-wanderlust-server](https://github.com/ProgrammingHero1/b14-wanderlust-server).
+
+## How authentication works
+
+1. better-auth runs inside Next.js at `/api/auth/*` (`src/lib/auth.ts`). It stores users, sessions and accounts in MongoDB and signs JWTs with the `jwt()` plugin.
+2. Client code asks better-auth for a short-lived JWT (`src/lib/getTokenFromClient.ts`). `api()` in `src/lib/api.ts` sends it as `Authorization: Bearer <token>`.
+3. The Express server verifies the token against the app's public keys at `${CLIENT_URL}/api/auth/jwks` using `jose`. Protected routes return `401` without a valid token.
+4. `src/proxy.ts` (Next.js 16's renamed middleware) redirects logged-out visitors from private pages to `/login?next=…`.
 
 ## Run locally
 
-Use Node.js 22.13 or newer and npm. You need a MongoDB Atlas connection string or a local MongoDB server.
-
-Install both projects from this folder:
+Requires Node.js 22+ and a MongoDB connection string (Atlas or local).
 
 ```bash
 npm install
 npm --prefix server install
 ```
 
-Create the environment files if they do not already exist. In PowerShell:
+### Environment
+
+Copy the examples, then fill in the values:
 
 ```powershell
 Copy-Item .env.example .env.local
 Copy-Item server/.env.example server/.env
 ```
 
-Do not overwrite an existing configured `.env` file. During implementation, your original sibling server's environment file was copied into the ignored `server/.env`; the sibling server was left unchanged.
-
-Frontend `.env.local`:
+`.env.local` (Next.js app):
 
 ```dotenv
+MONGODB_URI=your-mongodb-connection-string
+BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET=long-random-string        # npx @better-auth/cli secret
+GITHUB_CLIENT_ID=your-github-oauth-client-id
+GITHUB_CLIENT_SECRET=your-github-oauth-secret
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-Backend `server/.env`:
+`server/.env` (Express API):
 
 ```dotenv
-MONGODB_URL=your-mongodb-connection-string
-MONGODB_DB=togrtherly
-PORT=8000
+MONGODB_URI=your-mongodb-connection-string
 CLIENT_URL=http://localhost:3000
-NODE_ENV=development
-COOKIE_CROSS_SITE=false
+PORT=8000
 ```
 
-The database name intentionally preserves `togrtherly` from your original server. You can change `MONGODB_DB`. Only the Express server reads the database URL. Never put it in a `NEXT_PUBLIC_` variable.
+Both sides use the `togetherly` database. `CLIENT_URL` must be the exact origin the Next.js app runs on: it is used for CORS and for fetching the JWT signing keys.
 
-Open two terminals in the project folder:
+### GitHub login
+
+Create an OAuth App at **GitHub → Settings → Developer settings → OAuth Apps** with:
+
+- Homepage URL: `http://localhost:3000`
+- Authorization callback URL: `http://localhost:3000/api/auth/callback/github`
+
+Put its Client ID and a generated Client Secret in `.env.local`.
+
+### Start
 
 ```bash
-# Terminal 1: Express backend
-npm run server
+npm run server   # Express API on http://localhost:8000
+npm run dev      # Next.js on http://localhost:3000
 ```
 
-```bash
-# Terminal 2: Next.js frontend
-npm run dev
-```
+## Pages
 
-Visit **http://localhost:3000**. The API health response is at **http://localhost:8000**. Stop any older server using port 8000 first. Use `localhost` consistently rather than mixing it with `127.0.0.1`, since the application uses cookies and an allowed frontend origin.
+| Route               | Access  | Purpose                                                                         |
+| ------------------- | ------- | ------------------------------------------------------------------------------- |
+| `/`                 | Public  | Banner, community stats, 6 soonest upcoming events, gallery, newsletter         |
+| `/events`           | Public  | All upcoming events with search, type filter and sort                           |
+| `/events/[id]`      | Public  | Event details; logged-in users can join or leave; organizers can edit or delete |
+| `/events/create`    | Private | Create an event (future dates only); redirects to Upcoming Events with a toast  |
+| `/events/[id]/edit` | Private | Organizer-only editing                                                          |
+| `/my-events`        | Private | Manage your events: edit or delete                                              |
+| `/joined-events`    | Private | Events you joined, sorted by date                                               |
+| `/profile`          | Private | Update your display name and photo                                              |
+| `/impact`           | Public  | Live community counts                                                           |
+| `/login`, `/signup` | Public  | Email/password or GitHub login; register takes name, email, photo URL, password |
 
-**This workspace currently uses port 3001** because another project occupies port 3000. Its ignored `server/.env` has `CLIENT_URL=http://localhost:3001`. Start the frontend with `npm run dev -- --port 3001` and visit **http://localhost:3001/events/create** to create an event. If you change ports, update `CLIENT_URL` and restart Express.
+Passwords must contain an uppercase letter, a lowercase letter and at least 6 characters. Login, register and form errors show toasts. The navbar has a light/dark toggle and, when logged in, an avatar (hover shows your name) with a dropdown for Create Event, Manage Events, Joined Events and My Profile.
 
-The backend is an independent project in `server/`. You can also run `npm install` and `npm run dev` directly in that folder or move it to its own repository. It does not depend on the frontend source code. Your original `../togetherly-server` remains untouched; run the completed server in this project for these API routes.
+## API (`server/index.js`)
 
-## Start with real data
+🔒 = requires `Authorization: Bearer <better-auth JWT>`.
 
-There are no seeded events, invented volunteer counts, or fallback event arrays.
+| Method | Endpoint              | Purpose                                                           |
+| ------ | --------------------- | ----------------------------------------------------------------- |
+| GET    | `/`                   | Health check                                                      |
+| GET    | `/event-types`        | `Cleanup`, `Plantation`, `Donation`, `Other`                      |
+| GET    | `/events`             | Upcoming events; optional `search`, `type`, `sort`, `limit` (≤50) |
+| GET    | `/events/:id`         | Event details (`joined` reflects the caller if a token is sent)   |
+| POST   | `/events` 🔒          | Create an event; organizer name/email come from the token         |
+| PATCH  | `/events/:id` 🔒      | Organizer only, upcoming events only                              |
+| DELETE | `/events/:id` 🔒      | Organizer only                                                    |
+| POST   | `/events/:id/join` 🔒 | Join an upcoming event (not your own)                             |
+| DELETE | `/events/:id/join` 🔒 | Leave an upcoming event                                           |
+| GET    | `/my-events` 🔒       | Events you organize                                               |
+| GET    | `/joined-events` 🔒   | Events you joined, soonest first                                  |
+| GET    | `/stats`              | Counts used on the home and impact pages                          |
+| POST   | `/newsletter`         | Save a newsletter email                                           |
 
-1. Create an account at `/signup`.
-2. Open **Create an event** and enter a title, type, public image URL, location, future date/time, duration, and description.
-3. Publish the event. It is saved in MongoDB and appears on the homepage and Upcoming Events.
-4. Use **My events** to edit or delete it.
-5. Log out and create another account to test joining. Organizers cannot join their own events.
-6. Use **Joined events** to find your registrations. Open an upcoming event to leave it.
-
-An empty database displays helpful empty states and zero community counts. When the API is unavailable, the interface displays an error with a retry button.
-
-## Pages and features
-
-| Route               | Purpose                                                                                                   |
-| ------------------- | --------------------------------------------------------------------------------------------------------- |
-| `/`                 | Hero, database-backed community counts, participation steps, upcoming events, create-event call to action |
-| `/events`           | Upcoming events, title/location search, type filter, sorting, pagination                                  |
-| `/events/[id]`      | Event details, organizer, date/time, map link, join/leave, share link, organizer actions                  |
-| `/events/create`    | Protected event creation form                                                                             |
-| `/events/[id]/edit` | Protected organizer-only editing                                                                          |
-| `/my-events`        | Your organized events; filter upcoming/past, edit, delete with confirmation                               |
-| `/joined-events`    | Your registrations; filter upcoming/past                                                                  |
-| `/impact`           | Live event, participant, location, and category counts                                                    |
-| `/login`, `/signup` | Email/password accounts with persistent login                                                             |
-| `/upcoming-event`   | Redirects for the original routes                                                                         |
-
-The site includes responsive navigation, persistent light/dark mode, accessible form labels, keyboard focus styles, broken-image fallbacks, loading/error/empty states, and a newsletter subscription form.
-
-Newsletter subscriptions are saved in MongoDB. Sending newsletters requires a mail provider and is not included. Accounts use email/password; there are no placeholder social-login or password-reset buttons.
+Event input is validated on the server: title, type, location, description length, an http(s) thumbnail URL, a duration of 0.5–24 hours, and a date in the future.
 
 ## Project structure
 
 ```text
 src/
-  app/                  Next.js routes, layout, global styles
+  app/                    Routes, layout, global styles, /api/auth handler
   components/
-    HomePage/           Existing homepage components, extended with live data
-    ui/                 Existing reusable button and card components
-    AuthProvider.tsx    Current user and login session state
-    AuthForm.tsx        Shared login/signup form
-    EventBrowser.tsx    Search, filters, and pagination
-    EventCard.tsx       Shared event card
-    EventDetails.tsx    Event information and join/leave controls
-    EventForm.tsx       Shared create/edit form
-    PersonalEvents.tsx  Organized and joined event lists
-    RequireAuth.tsx     Login prompt for private pages
-  hooks/useApi.ts       Small fetch hook with loading, retry, and cancellation
-  lib/api.ts            API URL, fetch helper, date formatting
-  lib/types.ts          Types for API responses
+    home/                 banner, featured, upcoming-events, gallery, newsletter
+    event/                event-card, events-grid, event-details, event-form, edit-event, delete-event-dialog, event-image
+    ui/                   shadcn button and card
+    navbar.tsx  footer.tsx  auth-form.tsx  profile-form.tsx  personal-events.tsx  impact.tsx  feedback.tsx  welcome-toast.tsx
+  hooks/use-api.ts        Fetch hook with loading, error and retry
+  lib/                    auth.ts, auth-client.ts, getTokenFromClient.ts, api.ts, types.ts
+  proxy.ts                Redirects logged-out visitors from private pages
 server/
-  index.js              Express setup, middleware, auth, routes, MongoDB connection
-  vercel.json           Backend deployment configuration matching the reference
-  .env.example          Backend environment variable template
-  test/                 API tests and disposable browser-test server
-public/image/           Existing Togetherly logo and hero image
-tests/                  Browser tests
-playwright.config.ts    Local browser-test configuration
+  index.js                Express app: MongoDB, JWT verification, all routes
+  vercel.json             Deployment config
+public/image/             Logo, hero image, gallery/ photos
 ```
-
-`AuthProvider` shares the signed-in user across navigation and pages. `RequireAuth` provides a friendly login prompt; the backend independently checks permissions on every private request. `api()` sends the session cookie automatically. Components use `useApi()` for reads and `api()` in form handlers for writes.
-
-## Backend API
-
-All data is read or written through Express using the official MongoDB driver.
-
-| Method | Endpoint           | Access / purpose                                                            |
-| ------ | ------------------ | --------------------------------------------------------------------------- |
-| GET    | `/`                | Health response                                                             |
-| GET    | `/event-types`     | Supported event categories                                                  |
-| POST   | `/auth/signup`     | Create an account and session                                               |
-| POST   | `/auth/login`      | Create a session                                                            |
-| GET    | `/auth/me`         | Current user or `null`                                                      |
-| POST   | `/auth/logout`     | Invalidate session and clear cookie                                         |
-| GET    | `/events`          | Upcoming events; `search`, `type`, `sort`, `page`, `limit` query parameters |
-| GET    | `/events/:id`      | Event details and the viewer's joined state                                 |
-| POST   | `/events`          | Signed-in user: create event                                                |
-| PATCH  | `/events/:id`      | Organizer: update a future event                                            |
-| DELETE | `/events/:id`      | Organizer: delete event and its signups                                     |
-| POST   | `/events/:id/join` | Signed-in non-organizer: join a future event                                |
-| DELETE | `/events/:id/join` | Signed-in participant: leave a future event                                 |
-| GET    | `/my-events`       | Current user's organized events                                             |
-| GET    | `/joined-events`   | Current user's joined events                                                |
-| GET    | `/stats`           | Counts and categories calculated from MongoDB                               |
-| POST   | `/newsletter`      | Save a unique email subscription                                            |
-
-Write requests must include an `Origin` header matching `CLIENT_URL`. Browser requests do this automatically. For Postman or curl, set the header explicitly and retain the login cookie for protected routes.
-
-MongoDB collections:
-
-- `users`: name, normalized unique email, bcrypt password hash, creation date.
-- `sessions`: hashed random token, user ID, expiry. A TTL index removes expired sessions.
-- `events`: event fields, server-assigned organizer, participant IDs, creation/update dates.
-- `subscribers`: normalized unique email and subscription date.
-
-Dates are stored as MongoDB dates in UTC. Forms accept the user's local date/time and convert it to UTC before sending. Details are displayed in the viewer's local timezone. Upcoming events must have a future start time. An event's participant list uses MongoDB `$addToSet`, so repeated or concurrent joins cannot add duplicate participants. Public responses contain counts rather than private participant IDs.
-
-The impact page counts unique participants, distinct location strings, all current event records, and events whose start time has passed. These are not independently verified attendance or lifetime impact totals; deleting an event removes it from the counts.
 
 ## Checks
 
 ```bash
-# Production build, including Next.js TypeScript checks
-npm run build
-
-# API integration tests against a disposable MongoDB instance
-npm test
-
-# Browser tests against disposable data on ports 3010 and 8010
-npm run test:e2e
-
-# Format application and test code
-npm run format
+npm run build   # production build with type checking
+npm run lint
 ```
-
-The first API/browser test run may download a MongoDB test binary. Tests never use `MONGODB_URL` for their database. Browser tests use installed Microsoft Edge in headless mode and cover signup, login, create/edit/delete, search/filter, join/leave, persistent sessions, mobile overflow, dark mode, newsletter subscription, and network-error recovery. Screenshots and traces are written to ignored `test-results/`.
-
-For systems without Edge, install a Playwright browser and change `channel: "msedge"` in `playwright.config.ts` to `channel: "chromium"`:
-
-```bash
-npx playwright install chromium
-```
-
-## Production configuration
-
-Build and run the frontend with `npm run build` and `npm start`. Start the independent backend with `npm start` from `server/`.
-
-Set `NEXT_PUBLIC_API_URL` before building the frontend. Set `CLIENT_URL` to the exact frontend origin, with no trailing slash, and use HTTPS with `NODE_ENV=production` for secure session cookies. If the frontend and API are on different sites, set `COOKIE_CROSS_SITE=true`; both must use HTTPS, and browser third-party-cookie restrictions can still apply. Hosting them under the same site avoids that restriction.
-
-Authentication and newsletter endpoints have basic rate limiting. Passwords are hashed, cookies are HttpOnly, sessions are revocable, write origins are checked, IDs and fields are validated, and organizer permissions are enforced on the server. When adding a reverse proxy or multiple backend instances, configure trusted proxy handling and a shared rate-limit store for that deployment.
-
-MongoDB Atlas must allow your backend's IP address. Environment files are ignored by Git, while the credential-free examples are tracked.
-
-## Design reference and current verification limit
-
-The existing Togetherly logo, hero image, green/cream palette, and homepage/form styling were retained and extended across the working pages. The Figma connector returned an account usage-limit error before any screen context or screenshots could be retrieved. Therefore, the entire Figma file could not be inspected and exact visual parity or coverage of unseen screens is not verified. Exported screens or restored Figma access are needed for that comparison.
-
-Coding references reviewed:
-
-- https://github.com/ProgrammingHero1/b14-wanderlust-client
-- https://github.com/ProgrammingHero1/b14-wanderlust-server
-- https://www.figma.com/design/sFlpJuCMo2vmPjituPZtBv/Togetherly-%E2%80%94-Social-Impact-Events-%7C-Complete-UI-UX?node-id=0-1
