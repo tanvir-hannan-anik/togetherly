@@ -1,0 +1,73 @@
+- generic [ref=f11e1]:
+  - link "Skip to content" [ref=f11e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f11e3]:
+    - navigation "Main navigation" [ref=f11e4]:
+      - link "Togetherly home" [ref=f11e5] [cursor=pointer]:
+        - /url: /
+        - img "Togetherly" [ref=f11e6]
+      - generic [ref=f11e7]:
+        - link "Home" [ref=f11e8] [cursor=pointer]:
+          - /url: /
+        - link "Upcoming Events" [ref=f11e9] [cursor=pointer]:
+          - /url: /events
+        - link "Our Impact" [ref=f11e10] [cursor=pointer]:
+          - /url: /impact
+      - generic [ref=f11e11]:
+        - button "Switch to dark mode" [ref=f11e12] [cursor=pointer]:
+          - generic [ref=f11e15]: Dark
+        - button "Account menu for Test Organizer Renamed" [ref=f11e76] [cursor=pointer]:
+          - generic [aria-hidden]: Test Organizer Renamed
+        - button "Log out" [ref=f11e59] [cursor=pointer]
+  - main [ref=f11e17]:
+    - generic [ref=f11e18]:
+      - paragraph [ref=f11e19]: This is you
+      - heading "My profile" [level=1] [ref=f11e20]
+      - paragraph [ref=f11e21]: Update how your name and photo appear to the community.
+    - generic [ref=f11e64]:
+      - generic [ref=f11e67]:
+        - heading "Test Organizer Renamed" [level=3] [ref=f11e77]
+        - paragraph [ref=f11e69]: claude-test-a@example.com
+      - generic [ref=f11e70]:
+        - text: Display name *
+        - textbox "Display name *" [ref=f11e71]: Test Organizer Renamed
+      - generic [ref=f11e72]:
+        - text: Photo URL
+        - textbox "Photo URL" [ref=f11e73]:
+          - /placeholder: https://example.com/your-photo.jpg
+          - text: ftp://x
+      - alert [ref=f11e84]:
+        - paragraph [ref=f11e85]: Enter a valid http or https image URL.
+      - button "Save profile" [active] [ref=f11e74] [cursor=pointer]
+  - contentinfo [ref=f11e26]:
+    - generic [ref=f11e27]:
+      - generic [ref=f11e28]:
+        - link "Togetherly home" [ref=f11e29] [cursor=pointer]:
+          - /url: /
+          - img "Togetherly" [ref=f11e30]
+        - paragraph [ref=f11e31]: Small actions. Stronger communities.Let’s make a difference, together.
+      - navigation "Footer navigation" [ref=f11e32]:
+        - heading "Get involved" [level=2] [ref=f11e33]
+        - link "Explore events" [ref=f11e34] [cursor=pointer]:
+          - /url: /events
+        - link "Create an event" [ref=f11e35] [cursor=pointer]:
+          - /url: /events/create
+        - link "Our impact" [ref=f11e36] [cursor=pointer]:
+          - /url: /impact
+        - link "Joined events" [ref=f11e37] [cursor=pointer]:
+          - /url: /joined-events
+      - generic [ref=f11e38]:
+        - heading "A little good in your inbox" [level=2] [ref=f11e39]
+        - paragraph [ref=f11e40]: Join our community mailing list.
+        - generic [ref=f11e41]:
+          - generic [ref=f11e42]: Email address
+          - textbox "Email address" [ref=f11e43]:
+            - /placeholder: Your email address
+          - button "Subscribe to the mailing list" [ref=f11e44] [cursor=pointer]
+        - status
+    - generic [ref=f11e45]:
+      - generic [ref=f11e46]: Togetherly · Made for a kinder world.
+      - generic [ref=f11e47]: Local action. Lasting impact.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f11e53] [cursor=pointer]
+  - alert [ref=f11e75]

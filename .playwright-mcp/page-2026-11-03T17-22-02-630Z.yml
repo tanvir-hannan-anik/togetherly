@@ -1,0 +1,72 @@
+- generic [active] [ref=f6e1]:
+  - link "Skip to content" [ref=f6e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f6e3]:
+    - navigation "Main navigation" [ref=f6e4]:
+      - link "Togetherly home" [ref=f6e5] [cursor=pointer]:
+        - /url: /
+        - img "Togetherly" [ref=f6e6]
+      - generic [ref=f6e7]:
+        - link "Home" [ref=f6e8] [cursor=pointer]:
+          - /url: /
+        - link "Upcoming Events" [ref=f6e9] [cursor=pointer]:
+          - /url: /events
+        - link "Our Impact" [ref=f6e10] [cursor=pointer]:
+          - /url: /impact
+      - generic [ref=f6e11]:
+        - button "Switch to dark mode" [ref=f6e12] [cursor=pointer]
+        - link "Login" [ref=f6e74] [cursor=pointer]:
+          - /url: /login
+  - main [ref=f6e84]:
+    - generic [ref=f6e85]:
+      - generic [ref=f6e86]:
+        - paragraph [ref=f6e87]: The change you started
+        - heading "My events" [level=1] [ref=f6e88]
+        - paragraph [ref=f6e89]: A home for the causes you bring to life. Manage your events here.
+      - link "Create an event" [ref=f6e90] [cursor=pointer]:
+        - /url: /events/create
+    - generic "Filter your events" [ref=f6e92]:
+      - button "All events" [pressed] [ref=f6e93] [cursor=pointer]
+      - button "Upcoming" [ref=f6e94] [cursor=pointer]
+      - button "Past events" [ref=f6e95] [cursor=pointer]
+    - generic [ref=f6e96]:
+      - heading "Bring your community together" [level=2] [ref=f6e101]
+      - generic [ref=f6e102]:
+        - paragraph [ref=f6e103]: Events you organize will appear here. Start with a cause you care about.
+        - link "Create an event" [ref=f6e104] [cursor=pointer]:
+          - /url: /events/create
+  - contentinfo [ref=f6e43]:
+    - generic [ref=f6e44]:
+      - generic [ref=f6e45]:
+        - link "Togetherly home" [ref=f6e46] [cursor=pointer]:
+          - /url: /
+          - img "Togetherly" [ref=f6e47]
+        - paragraph [ref=f6e48]: Small actions. Stronger communities.Let’s make a difference, together.
+      - navigation "Footer navigation" [ref=f6e49]:
+        - heading "Get involved" [level=2] [ref=f6e50]
+        - link "Explore events" [ref=f6e51] [cursor=pointer]:
+          - /url: /events
+        - link "Create an event" [ref=f6e52] [cursor=pointer]:
+          - /url: /events/create
+        - link "Our impact" [ref=f6e53] [cursor=pointer]:
+          - /url: /impact
+        - link "Joined events" [ref=f6e54] [cursor=pointer]:
+          - /url: /joined-events
+      - generic [ref=f6e55]:
+        - heading "A little good in your inbox" [level=2] [ref=f6e56]
+        - paragraph [ref=f6e57]: Join our community mailing list.
+        - generic [ref=f6e58]:
+          - generic [ref=f6e59]: Email address
+          - textbox "Email address" [ref=f6e60]:
+            - /placeholder: Your email address
+          - button "Subscribe to the mailing list" [ref=f6e61] [cursor=pointer]
+        - status
+    - generic [ref=f6e62]:
+      - generic [ref=f6e63]: Togetherly · Made for a kinder world.
+      - generic [ref=f6e64]: Local action. Lasting impact.
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=f6e105]:
+        - generic [ref=f6e109]: Welcome back!
+  - button "Open Next.js Dev Tools" [ref=f6e70] [cursor=pointer]
+  - alert [ref=f6e83]: My events

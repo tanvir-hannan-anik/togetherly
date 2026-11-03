@@ -1,38 +1,7 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
-import { ArrowRight } from "lucide-react";
-import { api, errorMessage } from "@/lib/api";
-import { Button } from "@/components/ui/button";
 
 export default function Footer() {
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function subscribe(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    setBusy(true);
-    setMessage("");
-    setError("");
-    try {
-      const email = new FormData(form).get("email");
-      const result = await api<{ message: string }>("/newsletter", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      });
-      setMessage(result.message);
-      form.reset();
-    } catch (err) {
-      setError(errorMessage(err));
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
@@ -60,36 +29,69 @@ export default function Footer() {
           <Link href="/joined-events">Joined events</Link>
         </nav>
         <div>
-          <h2>A little good in your inbox</h2>
-          <p>Join our community mailing list.</p>
-          <form className="newsletter" onSubmit={subscribe}>
-            <label className="sr-only" htmlFor="newsletter-email">
-              Email address
-            </label>
-            <input
-              id="newsletter-email"
-              name="email"
-              type="email"
-              placeholder="Your email address"
-              required
-              maxLength={254}
-            />
-            <Button
-              type="submit"
-              disabled={busy}
-              aria-label="Subscribe to the mailing list"
-            >
-              {busy ? "…" : <ArrowRight size={18} />}
-            </Button>
-          </form>
-          <p role="status" className="success-text">
-            {message}
-          </p>
-          {error && (
-            <p role="alert" className="error-text">
-              {error}
-            </p>
-          )}
+          <h2>Follow the good</h2>
+          <p>Stories and new causes from our community.</p>
+          <ul className="social-links">
+            <li>
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Togetherly on X"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Togetherly on Facebook"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Togetherly on Instagram"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <rect x="2" y="2" width="20" height="20" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+                </svg>
+              </a>
+            </li>
+          </ul>
+          <p>hello@togetherly.org</p>
         </div>
       </div>
       <div className="container footer-bottom">

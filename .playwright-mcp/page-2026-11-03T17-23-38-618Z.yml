@@ -1,0 +1,120 @@
+- generic [active] [ref=f9e1]:
+  - link "Skip to content" [ref=f9e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f9e3]:
+    - navigation "Main navigation" [ref=f9e4]:
+      - link "Togetherly home" [ref=f9e5] [cursor=pointer]:
+        - /url: /
+        - img "Togetherly" [ref=f9e6]
+      - generic [ref=f9e7]:
+        - link "Home" [ref=f9e8] [cursor=pointer]:
+          - /url: /
+        - link "Upcoming Events" [ref=f9e9] [cursor=pointer]:
+          - /url: /events
+        - link "Our Impact" [ref=f9e10] [cursor=pointer]:
+          - /url: /impact
+      - generic [ref=f9e11]:
+        - button "Switch to dark mode" [ref=f9e12] [cursor=pointer]
+        - button "Account menu for claude-test-a@example.com" [ref=f9e115] [cursor=pointer]:
+          - text: C
+          - generic [aria-hidden]: claude-test-a@example.com
+        - button "Log out" [ref=f9e116] [cursor=pointer]
+  - main [ref=f9e16]:
+    - region [ref=f9e17]:
+      - generic [ref=f9e18]:
+        - paragraph [ref=f9e19]: Local action. Lasting impact.
+        - heading "Better communities start with us." [level=1] [ref=f9e20]:
+          - text: Better communities
+          - generic [ref=f9e21]: start with us.
+        - paragraph [ref=f9e22]: Discover meaningful events nearby. Show up, make friends, and create real change—one act of kindness at a time.
+        - generic [ref=f9e23]:
+          - link "Explore events" [ref=f9e24] [cursor=pointer]:
+            - /url: /events
+          - link "Start a cause" [ref=f9e28] [cursor=pointer]:
+            - /url: /events/create
+      - img "Community volunteers planting a young tree together in a park" [ref=f9e31]
+    - generic [ref=f9e32]:
+      - region [ref=f9e33]:
+        - heading "Our community at a glance" [level=2] [ref=f9e34]
+        - generic [ref=f9e120]:
+          - generic [ref=f9e121]:
+            - definition [ref=f9e122]: "0"
+            - term [ref=f9e123]: Community events
+          - generic [ref=f9e124]:
+            - definition [ref=f9e125]: "0"
+            - term [ref=f9e126]: Helping hands
+          - generic [ref=f9e127]:
+            - definition [ref=f9e128]: "0"
+            - term [ref=f9e129]: Event locations
+      - region [ref=f9e39]:
+        - heading "Do good, together." [level=2] [ref=f9e40]
+        - paragraph [ref=f9e41]: Explore the causes you care about.
+        - list [ref=f9e42]:
+          - listitem [ref=f9e43]:
+            - link "01 Discover local causes" [ref=f9e44] [cursor=pointer]:
+              - /url: /events
+              - generic [ref=f9e45]: "01"
+              - text: Discover local causes
+          - listitem [ref=f9e49]:
+            - link "02 Join with one click" [ref=f9e50] [cursor=pointer]:
+              - /url: /events
+              - generic [ref=f9e51]: "02"
+              - text: Join with one click
+          - listitem [ref=f9e55]:
+            - link "03 See your impact" [ref=f9e56] [cursor=pointer]:
+              - /url: /impact
+              - generic [ref=f9e57]: "03"
+              - text: See your impact
+    - generic [ref=f9e61]:
+      - generic [ref=f9e62]:
+        - generic [ref=f9e63]:
+          - paragraph [ref=f9e64]: Find your next small act
+          - heading "Upcoming events" [level=2] [ref=f9e65]
+          - paragraph [ref=f9e66]: Good people. Meaningful causes. A place for you.
+        - link "View all events" [ref=f9e67] [cursor=pointer]:
+          - /url: /events
+      - generic [ref=f9e130]:
+        - heading "Your community’s next chapter starts here" [level=2] [ref=f9e135]
+        - generic [ref=f9e136]:
+          - paragraph [ref=f9e137]: No upcoming events yet. Bring people together for a cause you care about.
+          - link "Create the first event" [ref=f9e138] [cursor=pointer]:
+            - /url: /events/create
+    - generic [ref=f9e74]:
+      - generic [ref=f9e75]:
+        - paragraph [ref=f9e76]: Small steps. Real change.
+        - heading "Have a cause close to your heart?" [level=2] [ref=f9e77]
+        - paragraph [ref=f9e78]: Bring your neighbors together. Start something meaningful.
+      - link "Start a cause" [ref=f9e79] [cursor=pointer]:
+        - /url: /events/create
+  - contentinfo [ref=f9e83]:
+    - generic [ref=f9e84]:
+      - generic [ref=f9e85]:
+        - link "Togetherly home" [ref=f9e86] [cursor=pointer]:
+          - /url: /
+          - img "Togetherly" [ref=f9e87]
+        - paragraph [ref=f9e88]: Small actions. Stronger communities.Let’s make a difference, together.
+      - navigation "Footer navigation" [ref=f9e89]:
+        - heading "Get involved" [level=2] [ref=f9e90]
+        - link "Explore events" [ref=f9e91] [cursor=pointer]:
+          - /url: /events
+        - link "Create an event" [ref=f9e92] [cursor=pointer]:
+          - /url: /events/create
+        - link "Our impact" [ref=f9e93] [cursor=pointer]:
+          - /url: /impact
+        - link "Joined events" [ref=f9e94] [cursor=pointer]:
+          - /url: /joined-events
+      - generic [ref=f9e95]:
+        - heading "A little good in your inbox" [level=2] [ref=f9e96]
+        - paragraph [ref=f9e97]: Join our community mailing list.
+        - generic [ref=f9e98]:
+          - generic [ref=f9e99]: Email address
+          - textbox "Email address" [ref=f9e100]:
+            - /placeholder: Your email address
+          - button "Subscribe to the mailing list" [ref=f9e101] [cursor=pointer]
+        - status
+    - generic [ref=f9e102]:
+      - generic [ref=f9e103]: Togetherly · Made for a kinder world.
+      - generic [ref=f9e104]: Local action. Lasting impact.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f9e110] [cursor=pointer]
+  - alert [ref=f9e139]

@@ -1,6 +1,8 @@
 import Header from "@/components/HomePage/Header";
 import Info from "@/components/HomePage/Info";
 import UpcomingEvents from "@/components/HomePage/UpcomingEvents";
+import Gallery from "@/components/home/gallery";
+import Newsletter from "@/components/home/newsletter";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
@@ -10,6 +12,7 @@ export default function Home() {
       <Header />
       <Info />
       <UpcomingEvents />
+      <Gallery />
       <section className="container community-cta">
         <div>
           <p className="eyebrow">Small steps. Real change.</p>
@@ -21,6 +24,7 @@ export default function Home() {
           <ArrowUpRight size={18} />
         </Link>
       </section>
+      <Newsletter />
     </main>
   );
 }
