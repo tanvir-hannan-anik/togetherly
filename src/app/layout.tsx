@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/HomePage/Navbar";
 import Footer from "@/components/Footer";
 import AuthProvider from "@/components/AuthProvider";
-import { Suspense } from "react";
-import { Loading } from "@/components/Feedback";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,8 +16,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Togetherly — Social Impact Events", template: "%s | Togetherly" },
-  description: "Discover local causes, join community events, and make a difference together.",
+  title: {
+    default: "Togetherly — Social Impact Events",
+    template: "%s | Togetherly",
+  },
+  description:
+    "Discover local causes, join community events, and make a difference together.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -30,14 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-        <a className="skip-link" href="#main-content">Skip to content</a>
-        <Suspense fallback={<div className="container nav-bar" aria-label="Loading navigation" />}>
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
           <Navbar />
-        </Suspense>
-        <Suspense fallback={<main id="main-content"><Loading /></main>}>
           {children}
-        </Suspense>
-        <Footer />
+          <Footer />
         </AuthProvider>
       </body>
     </html>

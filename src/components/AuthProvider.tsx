@@ -15,7 +15,11 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export default function AuthProvider({ children }: { children: React.ReactNode }) {
+export default function AuthProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,14 +37,28 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     }
   }
 
-  useEffect(() => { void refresh(); }, []);
+  useEffect(() => {
+    void refresh();
+  }, []);
 
   async function logout() {
     await api("/auth/logout", { method: "POST" });
     setUser(null);
   }
 
-  return <AuthContext.Provider value={{ user, loading, error, setUser, refresh, logout }}>{children}</AuthContext.Provider>;
+  function updateUser(nextUser: User | null) {
+    setUser(nextUser);
+    setError("");
+    setLoading(false);
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{ user, loading, error, setUser: updateUser, refresh, logout }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

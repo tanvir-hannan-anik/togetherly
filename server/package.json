@@ -1,12 +1,14 @@
 {
   "name": "togetherly-server",
   "version": "1.0.0",
+  "main": "index.js",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node --watch index.js",
     "start": "node index.js",
-    "test": "node --test test/api.test.js"
+    "test": "node --test test/api.test.js",
+    "test:serve": "node test/browser-server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

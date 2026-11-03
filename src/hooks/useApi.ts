@@ -16,11 +16,22 @@ export function useApi<T>(path: string | null) {
     setLoading(true);
     setError("");
     api<T>(path, { signal: controller.signal })
-      .then((result) => { if (!controller.signal.aborted) setData(result); })
-      .catch((err) => { if (!controller.signal.aborted) setError(errorMessage(err)); })
-      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+      .then((result) => {
+        if (!controller.signal.aborted) setData(result);
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) setError(errorMessage(err));
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
     return () => controller.abort();
   }, [path, version]);
 
-  return { data, error, loading, reload: () => setVersion((value) => value + 1) };
+  return {
+    data,
+    error,
+    loading,
+    reload: () => setVersion((value) => value + 1),
+  };
 }

@@ -10,7 +10,17 @@ export default function Home() {
       <Header />
       <Info />
       <UpcomingEvents />
-      <section className="container community-cta"><div><p className="eyebrow">Small steps. Real change.</p><h2>Have a cause close to your heart?</h2><p>Bring your neighbors together. Start something meaningful.</p></div><Link href="/events/create" className="button-link lime">Start a cause<ArrowUpRight size={18} /></Link></section>
+      <section className="container community-cta">
+        <div>
+          <p className="eyebrow">Small steps. Real change.</p>
+          <h2>Have a cause close to your heart?</h2>
+          <p>Bring your neighbors together. Start something meaningful.</p>
+        </div>
+        <Link href="/events/create" className="button-link lime">
+          Start a cause
+          <ArrowUpRight size={18} />
+        </Link>
+      </section>
     </main>
   );
 }
