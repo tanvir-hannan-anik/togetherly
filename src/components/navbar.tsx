@@ -1,12 +1,12 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Moon, Sun, Menu, X, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/components/AuthProvider";
-import { errorMessage } from "@/lib/api";
+import { LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -14,20 +14,33 @@ const navigation = [
   { label: "Our Impact", href: "/impact" },
 ];
 
+const profileLinks = [
+  { label: "Create Event", href: "/events/create" },
+  { label: "Manage Events", href: "/my-events" },
+  { label: "Joined Events", href: "/joined-events" },
+  { label: "My Profile", href: "/profile" },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, loading, logout } = useAuth();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  const displayName = user?.name || user?.email || "";
   const [isDark, setIsDark] = useState(false);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const dark = localStorage.getItem("togetherly-theme") === "dark";
     document.documentElement.classList.toggle("dark", dark);
     setIsDark(dark);
   }, []);
+
+  useEffect(() => {
+    setOpen(false);
+    setMenuOpen(false);
+  }, [pathname]);
 
   function toggleTheme() {
     const dark = !isDark;
@@ -37,27 +50,18 @@ export default function Navbar() {
   }
 
   async function handleLogout() {
-    setBusy(true);
-    setError("");
-    try {
-      await logout();
-      setOpen(false);
-      router.push("/");
-    } catch (err) {
-      setError(errorMessage(err));
-    } finally {
-      setBusy(false);
-    }
+    const { error } = await authClient.signOut();
+    if (error)
+      return toast.error(error.message || "Logout failed. Please try again.");
+    toast.success("You have been logged out.");
+    router.push("/");
+    router.refresh();
   }
 
   return (
     <header className="site-header">
       <nav className="container nav-bar" aria-label="Main navigation">
-        <Link
-          href="/"
-          aria-label="Togetherly home"
-          onClick={() => setOpen(false)}
-        >
+        <Link href="/" aria-label="Togetherly home">
           <Image
             src="/image/Togetherly Community Leaf Logo-1.png"
             alt="Togetherly"
@@ -76,31 +80,10 @@ export default function Navbar() {
               key={href}
               href={href}
               aria-current={pathname === href ? "page" : undefined}
-              onClick={() => setOpen(false)}
             >
               {label}
             </Link>
           ))}
-          {user && (
-            <>
-              <Link
-                href="/my-events"
-                onClick={() => setOpen(false)}
-                aria-current={pathname === "/my-events" ? "page" : undefined}
-              >
-                My events
-              </Link>
-              <Link
-                href="/joined-events"
-                onClick={() => setOpen(false)}
-                aria-current={
-                  pathname === "/joined-events" ? "page" : undefined
-                }
-              >
-                Joined events
-              </Link>
-            </>
-          )}
         </div>
         <div className="nav-actions">
           <button
@@ -114,25 +97,54 @@ export default function Navbar() {
           </button>
           {user ? (
             <>
-              <span
-                className="user-avatar"
-                title={user.name}
-                aria-label={`Signed in as ${user.name}`}
+              <div
+                className="profile-menu"
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget))
+                    setMenuOpen(false);
+                }}
               >
-                {user.name.charAt(0).toUpperCase()}
-              </span>
+                <button
+                  className="avatar-button"
+                  title={displayName}
+                  aria-label={`Account menu for ${displayName}`}
+                  aria-haspopup="menu"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen(!menuOpen)}
+                >
+                  {user.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={user.image} alt="" referrerPolicy="no-referrer" />
+                  ) : (
+                    displayName.charAt(0).toUpperCase()
+                  )}
+                  <span className="avatar-name" aria-hidden="true">
+                    {displayName}
+                  </span>
+                </button>
+                {menuOpen && (
+                  <div className="profile-dropdown" role="menu">
+                    <p className="profile-dropdown-name">{displayName}</p>
+                    {profileLinks.map(({ label, href }) => (
+                      <Link key={href} href={href} role="menuitem">
+                        {label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 className="icon-button"
-                disabled={busy}
                 onClick={handleLogout}
                 aria-label="Log out"
+                title="Log out"
               >
                 <LogOut size={18} />
               </button>
             </>
           ) : (
             <Link href="/login" className="button-link small">
-              {loading ? "Account" : "Login"}
+              {isPending ? "Account" : "Login"}
             </Link>
           )}
           <button
@@ -146,11 +158,6 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
-      {error && (
-        <p className="container error-text" role="alert">
-          {error}
-        </p>
-      )}
     </header>
   );
 }

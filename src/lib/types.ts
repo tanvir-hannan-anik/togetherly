@@ -1,5 +1,3 @@
-export type User = { _id: string; name: string; email: string };
-
 export type CommunityEvent = {
   _id: string;
   title: string;

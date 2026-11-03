@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/components/HomePage/Navbar";
+import Navbar from "@/components/navbar";
 import Footer from "@/components/Footer";
-import AuthProvider from "@/components/AuthProvider";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
 import WelcomeToast from "@/components/welcome-toast";
@@ -34,18 +33,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>
-          <a className="skip-link" href="#main-content">
-            Skip to content
-          </a>
-          <Navbar />
-          {children}
-          <Footer />
-          <Toaster richColors position="top-center" />
-          <Suspense fallback={null}>
-            <WelcomeToast />
-          </Suspense>
-        </AuthProvider>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
+        <Navbar />
+        {children}
+        <Footer />
+        <Toaster richColors position="top-center" />
+        <Suspense fallback={null}>
+          <WelcomeToast />
+        </Suspense>
       </body>
     </html>
   );
