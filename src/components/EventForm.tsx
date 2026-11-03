@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { ArrowRight, Check, Sprout } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage, Loading } from "@/components/Feedback";
 import { useApi } from "@/hooks/useApi";
@@ -33,18 +34,21 @@ export default function EventForm({ event }: { event?: CommunityEvent }) {
     }
     setBusy(true);
     try {
-      const result = await api<{ _id?: string }>(
-        event ? `/events/${event._id}` : "/events",
-        {
-          method: event ? "PATCH" : "POST",
-          body: JSON.stringify({
-            ...fields,
-            date: date.toISOString(),
-            duration: Number(fields.duration),
-          }),
-        },
-      );
-      router.push(`/events/${event?._id || result._id}?saved=1`);
+      await api(event ? `/events/${event._id}` : "/events", {
+        method: event ? "PATCH" : "POST",
+        body: JSON.stringify({
+          ...fields,
+          date: date.toISOString(),
+          duration: Number(fields.duration),
+        }),
+      });
+      if (event) {
+        toast.success("Your changes have been saved.");
+        router.push(`/events/${event._id}`);
+      } else {
+        toast.success("Your event has been published.");
+        router.push("/events");
+      }
     } catch (err) {
       setError(errorMessage(err));
     } finally {

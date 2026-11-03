@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useApi } from "@/hooks/useApi";
-import type { EventResults } from "@/lib/types";
+import type { CommunityEvent } from "@/lib/types";
 import EventCard from "@/components/EventCard";
 import { EmptyState, ErrorMessage, Loading } from "@/components/Feedback";
 
 export default function UpcomingEvents() {
   const { data, loading, error, reload } =
-    useApi<EventResults>("/events?limit=3");
+    useApi<CommunityEvent[]>("/events?limit=6");
   return (
     <section className="container section-space">
       <div className="section-heading">
@@ -29,9 +29,9 @@ export default function UpcomingEvents() {
         <Loading label="Finding upcoming events…" />
       ) : error ? (
         <ErrorMessage message={error} retry={reload} />
-      ) : data?.events.length ? (
+      ) : data?.length ? (
         <div className="events-grid">
-          {data.events.map((event) => (
+          {data.map((event) => (
             <EventCard key={event._id} event={event} />
           ))}
         </div>

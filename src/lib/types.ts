@@ -11,15 +11,9 @@ export type CommunityEvent = {
   duration: number;
   organizerId: string;
   organizerName: string;
+  organizerEmail: string;
   participantCount: number;
   joined: boolean;
-};
-
-export type EventResults = {
-  events: CommunityEvent[];
-  total: number;
-  page: number;
-  pages: number;
 };
 
 export type CommunityStats = {

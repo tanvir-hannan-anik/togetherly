@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   ArrowLeft,
@@ -14,7 +14,7 @@ import {
   Check,
   Pencil,
 } from "lucide-react";
-import { useAuth } from "@/components/AuthProvider";
+import { authClient } from "@/lib/auth-client";
 import { useApi } from "@/hooks/useApi";
 import type { CommunityEvent } from "@/lib/types";
 import { api, errorMessage, formatDate } from "@/lib/api";
@@ -26,15 +26,15 @@ import DeleteEventButton from "@/components/DeleteEventButton";
 export default function EventDetails() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const auth = useAuth();
+  const { data: session, isPending } = authClient.useSession();
+  const userId = session?.user.id;
   const {
     data: event,
     loading,
     error,
     reload,
   } = useApi<CommunityEvent>(
-    auth.loading ? null : `/events/${id}?viewer=${auth.user?._id || "guest"}`,
+    isPending ? null : `/events/${id}?viewer=${userId || "guest"}`,
   );
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState("");
@@ -74,7 +74,7 @@ export default function EventDetails() {
   if (loading) return <Loading label="Loading event details…" />;
   if (error) return <ErrorMessage message={error} retry={reload} />;
   if (!event) return <ErrorMessage message="This event could not be found." />;
-  const isOwner = auth.user?._id === event.organizerId;
+  const isOwner = !!userId && userId === event.organizerId;
   const isPast = new Date(event.date) <= new Date();
 
   return (
@@ -83,11 +83,6 @@ export default function EventDetails() {
         <ArrowLeft size={17} />
         Back to upcoming events
       </Link>
-      {searchParams.get("saved") && isOwner && (
-        <p role="status" className="success-banner">
-          Your event has been saved. It’s ready for your community.
-        </p>
-      )}
       <div className="detail-heading">
         <div>
           <span className="badge">{event.type}</span>
@@ -173,9 +168,7 @@ export default function EventDetails() {
               </div>
             </div>
           </dl>
-          {auth.error ? (
-            <ErrorMessage message={auth.error} retry={auth.refresh} />
-          ) : isOwner ? (
+          {isOwner ? (
             <div className="owner-actions">
               <p className="muted">You’re the organizer of this event.</p>
               {!isPast && (
@@ -192,7 +185,7 @@ export default function EventDetails() {
             </div>
           ) : isPast ? (
             <p className="status-pill">This event has already started.</p>
-          ) : auth.user ? (
+          ) : userId ? (
             <>
               <Button
                 className="form-submit"

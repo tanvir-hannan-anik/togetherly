@@ -1,5 +1,4 @@
 import EventForm from "@/components/EventForm";
-import RequireAuth from "@/components/RequireAuth";
 
 export const metadata = { title: "Create an Event" };
 
@@ -14,9 +13,7 @@ export default function Page() {
           required.
         </p>
       </div>
-      <RequireAuth>
         <EventForm />
-      </RequireAuth>
     </main>
   );
 }

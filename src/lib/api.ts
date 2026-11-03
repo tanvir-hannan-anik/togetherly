@@ -1,16 +1,18 @@
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-// All API calls include the session cookie. Database credentials stay on the server.
 export async function api<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const token = await getTokenFromClient();
   let response: Response;
   try {
     response = await fetch(`${API_URL}${path}`, {
       ...options,
-      credentials: "include",
       headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.body ? { "Content-Type": "application/json" } : {}),
         ...options.headers,
       },

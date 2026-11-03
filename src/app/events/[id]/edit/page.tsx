@@ -1,5 +1,4 @@
 import EventEditor from "@/components/EventEditor";
-import RequireAuth from "@/components/RequireAuth";
 
 export const metadata = { title: "Edit Event" };
 
@@ -13,9 +12,7 @@ export default function Page() {
           Update the details so everyone knows what to expect.
         </p>
       </div>
-      <RequireAuth>
         <EventEditor />
-      </RequireAuth>
     </main>
   );
 }
