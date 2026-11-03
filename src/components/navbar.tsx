@@ -34,7 +34,7 @@ export default function Navbar() {
   useEffect(() => {
     const dark = localStorage.getItem("togetherly-theme") === "dark";
     document.documentElement.classList.toggle("dark", dark);
-    setIsDark(dark);
+    // setIsDark(dark);
   }, []);
 
   function toggleTheme() {
