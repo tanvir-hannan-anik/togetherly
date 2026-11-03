@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write src server/index.js README.md",
-    "server": "npm --prefix server run dev"
+    "format": "prettier --write src README.md"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

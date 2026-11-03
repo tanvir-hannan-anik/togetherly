@@ -4,7 +4,7 @@ A community-service events site. Organizers post cleanups, plantations and donat
 
 - **Client:** Next.js 16 (App Router) + React 19, styled with Tailwind and plain CSS.
 - **Auth:** [better-auth](https://www.better-auth.com/) in the Next.js app: email/password and GitHub login, stored in MongoDB.
-- **Server:** a small Express 5 API in `server/index.js` backed by MongoDB.
+- **Server:** a separate Express 5 + MongoDB API project (not in this repository). This app talks to it through `NEXT_PUBLIC_API_URL`.
 
 The structure follows the reference projects [b14-wanderlust-client](https://github.com/ProgrammingHero1/b14-wanderlust-client) and [b14-wanderlust-server](https://github.com/ProgrammingHero1/b14-wanderlust-server).
 
@@ -17,23 +17,21 @@ The structure follows the reference projects [b14-wanderlust-client](https://git
 
 ## Run locally
 
-Requires Node.js 22+ and a MongoDB connection string (Atlas or local).
+Requires Node.js 22+, a MongoDB connection string (Atlas or local), and the Togetherly API server running separately (by default on `http://localhost:8000`).
 
 ```bash
 npm install
-npm --prefix server install
 ```
 
 ### Environment
 
-Copy the examples, then fill in the values:
+Copy the example, then fill in the values:
 
 ```powershell
 Copy-Item .env.example .env.local
-Copy-Item server/.env.example server/.env
 ```
 
-`.env.local` (Next.js app):
+`.env.local`:
 
 ```dotenv
 MONGODB_URI=your-mongodb-connection-string
@@ -44,15 +42,7 @@ GITHUB_CLIENT_SECRET=your-github-oauth-secret
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-`server/.env` (Express API):
-
-```dotenv
-MONGODB_URI=your-mongodb-connection-string
-CLIENT_URL=http://localhost:3000
-PORT=8000
-```
-
-Both sides use the `togetherly` database. `CLIENT_URL` must be the exact origin the Next.js app runs on: it is used for CORS and for fetching the JWT signing keys.
+The API server must use the same `togetherly` database, and its `CLIENT_URL` must be the exact origin this app runs on (`http://localhost:3000`). The server uses it for CORS and to fetch the JWT signing keys.
 
 ### GitHub login
 
@@ -65,8 +55,9 @@ Put its Client ID and a generated Client Secret in `.env.local`.
 
 ### Start
 
+Start the API server from its own project first, then:
+
 ```bash
-npm run server   # Express API on http://localhost:8000
 npm run dev      # Next.js on http://localhost:3000
 ```
 
@@ -87,7 +78,7 @@ npm run dev      # Next.js on http://localhost:3000
 
 Passwords must contain an uppercase letter, a lowercase letter and at least 6 characters. Login, register and form errors show toasts. The navbar has a light/dark toggle and, when logged in, an avatar (hover shows your name) with a dropdown for Create Event, Manage Events, Joined Events and My Profile.
 
-## API (`server/index.js`)
+## API used by this app (separate server)
 
 🔒 = requires `Authorization: Bearer <better-auth JWT>`.
 
@@ -122,9 +113,6 @@ src/
   hooks/use-api.ts        Fetch hook with loading, error and retry
   lib/                    auth.ts, auth-client.ts, getTokenFromClient.ts, api.ts, types.ts
   proxy.ts                Redirects logged-out visitors from private pages
-server/
-  index.js                Express app: MongoDB, JWT verification, all routes
-  vercel.json             Deployment config
 public/image/             Logo, hero image, gallery/ photos
 ```
 
