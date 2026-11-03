@@ -5,7 +5,7 @@ const photos = [
   { src: "/image/gallery/gallery-2.jpg", caption: "Tree plantation day" },
   { src: "/image/gallery/gallery-3.jpg", caption: "Winter clothes drive" },
   { src: "/image/gallery/gallery-4.jpg", caption: "Community food bank" },
-  { src: "/image/gallery/gallery-5.jpg", caption: "School supplies donation" },
+  { src: "/image/gallery/gallery-5.jpg", caption: "Beach cleanup" },
   { src: "/image/gallery/gallery-6.jpg", caption: "Park restoration" },
 ];
 
