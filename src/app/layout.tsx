@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/HomePage/Navbar";
 import Footer from "@/components/Footer";
 import AuthProvider from "@/components/AuthProvider";
+import { Suspense } from "react";
 import { Toaster } from "sonner";
+import WelcomeToast from "@/components/welcome-toast";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,6 +42,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <Footer />
           <Toaster richColors position="top-center" />
+          <Suspense fallback={null}>
+            <WelcomeToast />
+          </Suspense>
         </AuthProvider>
       </body>
     </html>
